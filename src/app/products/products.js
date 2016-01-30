@@ -4,6 +4,8 @@ angular.module('orderCloud')
     .controller('ProductsCtrl', ProductsController)
     .controller('ProductEditCtrl', ProductEditController)
     .controller('ProductCreateCtrl', ProductCreateController)
+    .controller('PriceScheduleModalCtrl', PriceScheduleModalController)
+
     .controller('ProductAssignmentsCtrl', ProductAssignmentsController)
     .controller('ProductCreateAssignmentCtrl', ProductCreateAssignmentController)
 
@@ -39,7 +41,12 @@ function ProductsConfig($stateProvider) {
             url: '/create',
             templateUrl: 'products/templates/productCreate.tpl.html',
             controller: 'ProductCreateCtrl',
-            controllerAs: 'productCreate'
+            controllerAs: 'productCreate',
+            resolve: {
+                PriceScheduleList: function(OrderCloud) {
+                    return OrderCloud.PriceSchedules.List();
+                }
+            }
         })
         .state('products.assignments', {
             url: '/:productid/assignments',
@@ -106,14 +113,72 @@ function ProductEditController($exceptionHandler, $state, OrderCloud, SelectedPr
     }
 }
 
-function ProductCreateController($exceptionHandler, $state, OrderCloud) {
+function ProductCreateController($exceptionHandler, $state, $uibModal, OrderCloud, PriceScheduleList, buyerid) {
     var vm = this;
-    vm.product = {};
+    vm.product = {
+        Type: 'Static'
+    };
+
+    vm.priceSchedules = PriceScheduleList;
+    vm.assignment = {
+        "BuyerID": buyerid,
+        "ProductID": null,
+        "StandardPriceScheduleID": null,
+        "UserGroupID": "GENERAL"
+    };
+
+    vm.selectPriceSchedule = function(scope) {
+        vm.assignment.StandardPriceScheduleID == scope.priceSchedule.ID ? vm.assignment.StandardPriceScheduleID = null : vm.assignment.StandardPriceScheduleID = scope.priceSchedule.ID;
+    };
+
+    vm.newPriceSchedule = function() {
+        $uibModal.open({
+            animation: true,
+            templateUrl: 'products/templates/newPriceSchedule.modal.tpl.html',
+            controller: 'PriceScheduleModalCtrl',
+            controllerAs: 'psModal',
+            size: 'lg'
+        }).result
+            .then(function(data) {
+                vm.priceSchedules.Items.push(data);
+                vm.assignment.StandardPriceScheduleID = data.ID;
+            })
+    };
 
     vm.Submit = function () {
         OrderCloud.Products.Create(vm.product)
-            .then(function () {
-                $state.go('products', {}, {reload:true})
+            .then(function (data) {
+                vm.assignment.ProductID = data.ID;
+                OrderCloud.Products.SaveAssignment(vm.assignment)
+                    .then(function () {
+                        $state.go('products', {}, {reload:true})
+                    });
+            })
+            .catch(function(ex) {
+                $exceptionHandler(ex)
+            });
+    }
+}
+
+function PriceScheduleModalController($uibModalInstance, PriceBreak, OrderCloud) {
+    var vm = this;
+    vm.priceSchedule = {};
+    vm.priceSchedule.RestrictedQuantity = false;
+    vm.priceSchedule.PriceBreaks = new Array();
+
+    vm.addPriceBreak = function() {
+        PriceBreak.addPriceBreak(vm.priceSchedule, vm.price, vm.quantity);
+        vm.quantity = null;
+        vm.price = null;
+    };
+
+    vm.deletePriceBreak = PriceBreak.deletePriceBreak;
+
+    vm.Submit = function() {
+        vm.priceSchedule = PriceBreak.setMinMax(vm.priceSchedule);
+        OrderCloud.PriceSchedules.Create(vm.priceSchedule)
+            .then(function(data) {
+                $uibModalInstance.close(data);
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
