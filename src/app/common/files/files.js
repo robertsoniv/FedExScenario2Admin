@@ -88,9 +88,7 @@ function ordercloudFileUpload( $parse, Underscore, FileReader, FilesService ) {
         scope: {
             model: '=',
             keyname: '@',
-            label: '@',
-            extensions: '@',
-            invalidExtension: '='
+            label: '@'
         },
         restrict: 'E',
         templateUrl: 'common/files/templates/files.tpl.html',
