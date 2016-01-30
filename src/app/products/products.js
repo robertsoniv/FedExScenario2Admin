@@ -21,8 +21,12 @@ function ProductsConfig($stateProvider) {
             controllerAs: 'products',
             data: {componentName: 'Products'},
             resolve: {
-                ProductList: function (OrderCloud) {
-                    return OrderCloud.Products.List();
+                ProductList: function (OrderCloud, Underscore) {
+                    return OrderCloud.Products.List()
+                        .then(function(data) {
+                            //filter out other buyers products
+                            return data;
+                        });
                 }
             }
         })
@@ -116,7 +120,11 @@ function ProductEditController($exceptionHandler, $state, OrderCloud, SelectedPr
 function ProductCreateController($exceptionHandler, $state, $uibModal, OrderCloud, PriceScheduleList, buyerid) {
     var vm = this;
     vm.product = {
-        Type: 'Static'
+        Type: 'Static',
+        xp: {
+            Global:false,
+            BuyerID:'FedExFranchiseBuyer'
+        }
     };
 
     vm.priceSchedules = PriceScheduleList;
@@ -124,7 +132,7 @@ function ProductCreateController($exceptionHandler, $state, $uibModal, OrderClou
         "BuyerID": buyerid,
         "ProductID": null,
         "StandardPriceScheduleID": null,
-        "UserGroupID": "GENERAL"
+        "UserGroupID": "FRANCHISEBUYER1"
     };
 
     vm.selectPriceSchedule = function(scope) {

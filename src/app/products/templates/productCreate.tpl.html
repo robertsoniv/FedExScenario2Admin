@@ -10,6 +10,14 @@
                     <input id="productNameInput" type="text" class="form-control" ng-model="productCreate.product.Name" ng-required="true"/>
                 </fieldset>
                 <fieldset class="form-group">
+                    <label for="productTypeInput">Product Type</label>
+                    <select id="productTypeInput" class="form-control" ng-model="productCreate.product.Type" ng-required="true">
+                        <option value="Static">Static</option>
+                        <option value="VariableText">Variable Text</option>
+                        <option value="Kit">Kit</option>
+                    </select>
+                </fieldset>
+                <fieldset class="form-group">
                     <label for="productDescriptionInput">Description</label>
                     <textarea id="productDescriptionInput" type="text" class="form-control" ng-model="productCreate.product.Description"></textarea>
                 </fieldset>
@@ -29,6 +37,7 @@
                 </fieldset>
                 <ordercloud-file-upload model="productCreate.product" keyname="image" label="Image" extensions="jpg, png, gif, jpeg, tiff"></ordercloud-file-upload>
             </div>
+
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
