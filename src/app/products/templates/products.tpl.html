@@ -2,6 +2,8 @@
     <article class="container">
         <h3 class="page-header">
             Products
+            <button class="btn btn-default btn-sm" ng-class="{'btn-primary':products.filter == 'mandatory'}" ng-click="products.toggleFilter('mandatory')">Mandatory</button>
+            <button class="btn btn-default btn-sm" ng-class="{'btn-primary':products.filter == 'optional'}" ng-click="products.toggleFilter('optional')">Optional</button>
         </h3>
         <ordercloud-search servicename="Products" controlleras="products"></ordercloud-search>
         <div class="well well-lg text-center" ng-if="!products.list.Items.length">
@@ -28,7 +30,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="product in products.list.Items">
+                    <tr ng-repeat="product in products.list.Items | mandatoryFilter:products.filter">
                         <td>
                             <div class="btn-group btn-block" uib-dropdown dropdown-append-to-body>
                                 <button type="button" class="btn btn-default btn-block" uib-dropdown-toggle><i class="fa fa-cog"></i> <span class="caret"></span></button>

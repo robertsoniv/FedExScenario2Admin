@@ -1,5 +1,6 @@
 angular.module('orderCloud')
 
+    .filter('mandatoryFilter', mandatoryFilter)
     .config(ProductsConfig)
     .controller('ProductsCtrl', ProductsController)
     .controller('ProductEditCtrl', ProductEditController)
@@ -10,6 +11,23 @@ angular.module('orderCloud')
     .controller('ProductCreateAssignmentCtrl', ProductCreateAssignmentController)
 
 ;
+
+function mandatoryFilter(Underscore) {
+    return function(productsArray, filterType) {
+        switch(filterType) {
+            case('mandatory'):
+                return Underscore.filter(productsArray, function(product) {return product.xp.Mandatory == true});
+                break;
+            case('optional'):
+                return Underscore.filter(productsArray, function(product) {return !product.xp.Mandatory});
+                break;
+            default:
+                return productsArray;
+                break;
+        }
+
+    }
+}
 
 function ProductsConfig($stateProvider) {
     $stateProvider
@@ -96,6 +114,10 @@ function ProductsController(ProductList, TrackSearch) {
     vm.searching = function() {
         return TrackSearch.GetTerm() ? true : false;
     };
+
+    vm.toggleFilter = function(filter) {
+        vm.filter == filter ? vm.filter = null : vm.filter = filter;
+    }
 }
 
 function ProductEditController($exceptionHandler, $state, OrderCloud, SelectedProduct) {
