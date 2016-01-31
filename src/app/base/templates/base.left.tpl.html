@@ -1,12 +1,19 @@
 <aside id="BaseLeft">
     <nav>
         <ul class="nav nav-pills nav-stacked">
+            <h4>Franchise Admin</h4>
             <li role="presentation" ui-sref-active="active">
-                <a href="" ui-sref="home"><i class="fa fa-home"></i> Home</a>
+                <a href="" ui-sref="home"><i class="fa fa-dashboard"></i> Marketing Dashboard</a>
+            </li>
+            <li role="presentation" ui-sref-active="active">
+                <a href="" ui-sref="retailProfiles"><i class="fa fa-building"></i> Retail Profiles</a>
+            </li>
+            <li role="presentation" ui-sref-active="active">
+                <a href="" ui-sref="products"><i class="fa fa-tag"></i> Products</a>
             </li>
         </ul>
     </nav>
-    <nav ng-if="baseLeft.catalogItems.length">
+    <!--<nav ng-if="baseLeft.catalogItems.length">
         <h4>Catalog</h4>
         <ul class="nav nav-pills nav-stacked">
             <li role="presentation" ng-repeat="item in baseLeft.catalogItems" ui-sref-active="active">
@@ -22,5 +29,5 @@
                 <a href="" ui-sref="{{item.StateRef}}">{{item.Display}}</a>
             </li>
         </ul>
-    </nav>
+    </nav>-->
 </aside>

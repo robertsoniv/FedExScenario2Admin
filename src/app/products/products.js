@@ -48,8 +48,12 @@ function ProductsConfig($stateProvider) {
             controller: 'ProductCreateCtrl',
             controllerAs: 'productCreate',
             resolve: {
-                PriceScheduleList: function(OrderCloud) {
-                    return OrderCloud.PriceSchedules.List();
+                PriceScheduleList: function(OrderCloud, Underscore) {
+                    return OrderCloud.PriceSchedules.List()
+                        .then(function(data) {
+                            data.Items = Underscore.filter(data.Items, function(item) {return item.Name.indexOf('FedExFranchise') > -1});
+                            return data;
+                        });
                 },
                 RetailProfileList: function(OrderCloud) {
                     return OrderCloud.UserGroups.List();

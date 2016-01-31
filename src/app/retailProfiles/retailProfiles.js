@@ -98,7 +98,7 @@ function RetailProfileEditController( $exceptionHandler, $state, OrderCloud, Sel
 function RetailProfileCreateController( $exceptionHandler, $state, OrderCloud ) {
     var vm = this;
     vm.retailProfile = {
-        ReportingGroup: true
+        ReportingGroup: false
     };
     vm.Submit = function() {
         OrderCloud.UserGroups.Create(vm.retailProfile)
