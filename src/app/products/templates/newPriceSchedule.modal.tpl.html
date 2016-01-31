@@ -109,7 +109,7 @@
 		</div>
 		<div class="form-group">
 			<button type="submit" class="btn btn-primary" ng-disabled="PriceScheduleCreateForm.$invalid || !psModal.priceSchedule.PriceBreaks.length">Save</button>
-			<button type="button" class="btn btn-default" ui-sref="^">Cancel</button>
+			<button type="button" class="btn btn-default" ng-click="psModal.cancel()">Cancel</button>
 		</div>
 	</form>
 </article>

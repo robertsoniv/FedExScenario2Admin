@@ -1,0 +1,35 @@
+<article class="container">
+    <h3 class="page-header">
+        <b>New Retail Profile</b>
+    </h3>
+    <form name="RetailProfileCreateForm" ng-submit="retailProfileCreate.Submit()">
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="RetailProfileIDInput">Retail Profile ID</label>
+                <input id="RetailProfileIDInput" ordercloud-auto-id type="text" class="form-control" ng-model="retailProfileCreate.retailProfile.ID"/>
+            </div>
+            <div class="col-sm-6 form-group">
+                <label for="RetailProfileNameInput">Retail Profile Name</label>
+                <input id="RetailProfileNameInput" type="text" class="form-control" ng-model="retailProfileCreate.retailProfile.Name"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 form-group">
+                <label for="RetailProfileDescriptionInput">Description</label>
+                <textarea id="RetailProfileDescriptionInput" type="text" class="form-control" ng-model="retailProfileCreate.retailProfile.Description"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="RetailProfileReportingGroupInput">
+                <input id="RetailProfileReportingGroupInput" type="checkbox" ng-model="retailProfileCreate.retailProfile.ReportingGroup" />
+                Reporting Group</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" ng-disabled="RetailProfileCreateForm.$invalid">Save</button>
+            <button type="button" class="btn btn-default" ui-sref="^">Cancel</button>
+        </div>
+    </form>
+</article>

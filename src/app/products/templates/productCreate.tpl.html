@@ -14,7 +14,6 @@
                     <select id="productTypeInput" class="form-control" ng-model="productCreate.product.Type" ng-required="true">
                         <option value="Static">Static</option>
                         <option value="VariableText">Variable Text</option>
-                        <option value="Kit">Kit</option>
                     </select>
                 </fieldset>
                 <fieldset class="form-group">
@@ -42,7 +41,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            Price Schedule (choose one)
+                            Price Schedule <small>(choose one)</small>
                         </h3>
                     </div>
                     <div class="panel-body" ng-if="!productCreate.priceSchedules.Items.length">
@@ -78,6 +77,43 @@
                     <div class="panel-footer text-right" ng-if="productCreate.priceSchedules.Items.length">
                         <button type="button" class="btn btn-success" ng-click="productCreate.newPriceSchedule()"><i class="fa fa-plus-circle"></i> Create New Price Schedule</button>
                     </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Retail Profile Assignment <small>(select at least one)</small>
+                        </h3>
+                    </div>
+                    <div class="panel-body" ng-if="!productCreate.priceSchedules.Items.length">
+                        <div class="well well-sm text-center">
+                            You have no retail profiles. <a href="" ui-sref="base.retailProfiles.create">Create one now</a>
+                        </div>
+                    </div>
+                    <table class="table table-hover" ng-if="productCreate.retailProfiles.Items.length">
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col class="action-column"/>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>
+                                <div>ID</div>
+                            </th>
+                            <th>
+                                <div>Name</div>
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="profile in productCreate.retailProfiles.Items track by $index" ng-click="productCreate.toggleRetailProfile(this)">
+                            <td>{{profile.ID}}</td>
+                            <td>{{profile.Name}}</td>
+                            <td><i class="fa" ng-class="{'fa-check-circle text-success':profile.Selected, 'fa-circle-o text-muted':!profile.Selected}"></i></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

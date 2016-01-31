@@ -50,6 +50,9 @@ function ProductsConfig($stateProvider) {
             resolve: {
                 PriceScheduleList: function(OrderCloud) {
                     return OrderCloud.PriceSchedules.List();
+                },
+                RetailProfileList: function(OrderCloud) {
+                    return OrderCloud.UserGroups.List();
                 }
             }
         })
@@ -118,7 +121,7 @@ function ProductEditController($exceptionHandler, $state, OrderCloud, SelectedPr
     }
 }
 
-function ProductCreateController($exceptionHandler, $state, $uibModal, OrderCloud, PriceScheduleList, buyerid) {
+function ProductCreateController($q, $exceptionHandler, $state, $uibModal, Underscore, OrderCloud, PriceScheduleList, RetailProfileList, buyerid) {
     var vm = this;
     vm.product = {
         Type: 'Static',
@@ -128,16 +131,21 @@ function ProductCreateController($exceptionHandler, $state, $uibModal, OrderClou
         }
     };
 
+    vm.retailProfiles = RetailProfileList;
     vm.priceSchedules = PriceScheduleList;
     vm.assignment = {
         "BuyerID": buyerid,
         "ProductID": null,
         "StandardPriceScheduleID": null,
-        "UserGroupID": "FRANCHISEBUYER1"
+        "UserGroupID": null
     };
 
     vm.selectPriceSchedule = function(scope) {
         vm.assignment.StandardPriceScheduleID == scope.priceSchedule.ID ? vm.assignment.StandardPriceScheduleID = null : vm.assignment.StandardPriceScheduleID = scope.priceSchedule.ID;
+    };
+
+    vm.toggleRetailProfile = function(scope) {
+        scope.profile.Selected = !scope.profile.Selected;
     };
 
     vm.newPriceSchedule = function() {
@@ -154,14 +162,21 @@ function ProductCreateController($exceptionHandler, $state, $uibModal, OrderClou
             })
     };
 
+    vm.newRetailProfile = function() {};
+
     vm.Submit = function () {
         OrderCloud.Products.Create(vm.product)
             .then(function (data) {
+                var queue = [];
                 vm.assignment.ProductID = data.ID;
-                OrderCloud.Products.SaveAssignment(vm.assignment)
-                    .then(function () {
-                        $state.go('products', {}, {reload:true})
-                    });
+                angular.forEach(Underscore.where(vm.retailProfiles.Items, {'Selected':true}), function(profile) {
+                    var assignment = angular.copy(vm.assignment);
+                    assignment.UserGroupID = profile.ID;
+                    queue.push(OrderCloud.Products.SaveAssignment(assignment));
+                });
+                $q.all(queue).then(function() {
+                    $state.go('products', {}, {reload:true})
+                });
             })
             .catch(function(ex) {
                 $exceptionHandler(ex)
@@ -192,6 +207,10 @@ function PriceScheduleModalController($uibModalInstance, PriceBreak, OrderCloud)
             .catch(function(ex) {
                 $exceptionHandler(ex)
             });
+    };
+
+    vm.cancel = function() {
+        $uibModalInstance.close();
     }
 }
 
@@ -210,7 +229,7 @@ function ProductAssignmentsController($exceptionHandler, $stateParams, $state, O
             .catch(function(ex) {
                 $exceptionHandler(ex)
             })
-    }
+    };
 
     function PagingFunction() {
         if (vm.list.Meta.Page < vm.list.Meta.TotalPages) {
