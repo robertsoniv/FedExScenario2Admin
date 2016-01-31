@@ -53,7 +53,7 @@ function RetailProfilesConfig( $stateProvider ) {
                 AssignedUsers: function ($stateParams, OrderCloud) {
                     return OrderCloud.UserGroups.ListUserAssignments($stateParams.retailProfileid);
                 },
-                SelectedUserGroup: function($stateParams, OrderCloud) {
+                SelectedRetailProfile: function($stateParams, OrderCloud) {
                     return OrderCloud.UserGroups.Get($stateParams.retailProfileid);
                 }
             }
@@ -97,7 +97,9 @@ function RetailProfileEditController( $exceptionHandler, $state, OrderCloud, Sel
 
 function RetailProfileCreateController( $exceptionHandler, $state, OrderCloud ) {
     var vm = this;
-
+    vm.retailProfile = {
+        ReportingGroup: true
+    };
     vm.Submit = function() {
         OrderCloud.UserGroups.Create(vm.retailProfile)
             .then(function() {
@@ -109,9 +111,9 @@ function RetailProfileCreateController( $exceptionHandler, $state, OrderCloud ) 
     }
 }
 
-function RetailProfileAssignController(OrderCloud, Assignments, Paging, UserList, AssignedUsers, SelectedUserGroup) {
+function RetailProfileAssignController(OrderCloud, Assignments, Paging, UserList, AssignedUsers, SelectedRetailProfile) {
     var vm = this;
-    vm.UserGroup = SelectedUserGroup;
+    vm.RetailProfile = SelectedRetailProfile;
     vm.list = UserList;
     vm.assignments = AssignedUsers;
     vm.saveAssignments = SaveAssignment;
@@ -120,12 +122,12 @@ function RetailProfileAssignController(OrderCloud, Assignments, Paging, UserList
     function SaveFunc(ItemID) {
         return OrderCloud.UserGroups.SaveUserAssignment({
             UserID: ItemID,
-            RetailProfileID: vm.UserGroup.ID
+            UserGroupID: vm.RetailProfile.ID
         });
     }
 
     function DeleteFunc(ItemID) {
-        return OrderCloud.UserGroups.DeleteUserAssignment(vm.UserGroup.ID, ItemID);
+        return OrderCloud.UserGroups.DeleteUserAssignment(vm.RetailProfile.ID, ItemID);
     }
 
     function SaveAssignment() {
@@ -133,7 +135,7 @@ function RetailProfileAssignController(OrderCloud, Assignments, Paging, UserList
     }
 
     function AssignmentFunc() {
-        return OrderCloud.UserGroups.ListUserAssignments(vm.UserGroup.ID, null, vm.assignments.Meta.PageSize, 'UserID');
+        return OrderCloud.UserGroups.ListUserAssignments(vm.RetailProfile.ID, null, vm.assignments.Meta.PageSize, 'UserID');
     }
 
     function PagingFunction() {
