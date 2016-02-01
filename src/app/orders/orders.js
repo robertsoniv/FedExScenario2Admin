@@ -17,7 +17,7 @@ function OrdersConfig( $stateProvider ) {
             data: {componentName: 'Orders'},
             resolve: {
                 OrderList: function(OrderCloud) {
-                    return OrderCloud.Orders.List('incoming');
+                    return OrderCloud.Orders.List('outgoing');
                 }
             }
         })
