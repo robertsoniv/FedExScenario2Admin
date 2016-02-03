@@ -39,13 +39,8 @@ function ProductsConfig($stateProvider) {
             controllerAs: 'products',
             data: {componentName: 'Products'},
             resolve: {
-                ProductList: function (OrderCloud, Underscore) {
-                    return OrderCloud.Products.List()
-                        .then(function(data) {
-                            data.Items = Underscore.filter(data.Items, function(item) {return item.xp.BuyerID == 'FedExFranchiseBuyer'});
-                            //filter out other buyers products
-                            return data;
-                        });
+                ProductList: function (OrderCloud, buyerid) {
+                    return OrderCloud.Products.List(null, null, null, null, null, {'xp.BuyerID':buyerid});
                 }
             }
         })
